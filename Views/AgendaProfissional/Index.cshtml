@@ -1,0 +1,41 @@
+@model IEnumerable<BarberFlow.Models.Reserva>
+@using BarberFlow.Enums
+@{ ViewData["Title"] = "Minha agenda"; var data = (DateTime)ViewBag.Data; int? proximoId = ViewBag.ProximoId; }
+<section class="container py-5">
+    <div class="admin-page-header mb-4">
+        <div><span class="eyebrow">ÁREA DO PROFISSIONAL</span><h1 class="mt-2">Minha agenda</h1><p class="text-secondary mb-0">Acompanhe os atendimentos e mantenha os status atualizados.</p></div>
+        <form method="get" class="d-flex gap-2"><input type="date" name="data" value="@data.ToString("yyyy-MM-dd")" class="form-control" /><button class="btn btn-outline-brand">Ver dia</button></form>
+    </div>
+    <div class="agenda-summary mb-4">
+        <div><span>Total</span><strong>@ViewBag.Total</strong></div><div><span>Pendentes</span><strong>@ViewBag.Pendentes</strong></div><div><span>Confirmadas</span><strong>@ViewBag.Confirmadas</strong></div><div><span>Concluídas</span><strong>@ViewBag.Concluidas</strong></div>
+    </div>
+    @if (!Model.Any())
+    {<div class="empty-state mx-auto text-center"><h2 class="h4">Nenhum atendimento</h2><p class="text-secondary">Não existem reservas para @data.ToString("dd/MM/yyyy").</p></div>}
+    else
+    {
+        <div class="reservation-list">
+        @foreach (var reserva in Model)
+        {
+            var passado = reserva.DataHoraFim < DateTime.Now;
+            <article class="reservation-card @(proximoId == reserva.Id ? "next-reservation" : "") @(passado ? "past-reservation" : "")">
+                <div class="reservation-date"><strong>@reserva.DataHoraInicio.ToString("HH")</strong><span>@reserva.DataHoraInicio.ToString("mm")</span></div>
+                <div class="flex-grow-1">
+                    <div class="d-flex flex-wrap align-items-center gap-2"><h2 class="h5 mb-0">@reserva.Cliente.Nome</h2>@if (proximoId == reserva.Id){<span class="next-badge">Próximo atendimento</span>}</div>
+                    <p class="mb-1 mt-2 text-secondary">@reserva.Servico.Nome · @reserva.DataHoraInicio.ToString("HH:mm") às @reserva.DataHoraFim.ToString("HH:mm")</p>
+                    <span class="status-pill status-@reserva.Status.ToString().ToLower()">@reserva.Status</span>
+                </div>
+                @if (reserva.Status is not StatusReserva.Cancelada and not StatusReserva.Concluida)
+                {
+                    <form asp-action="AlterarStatus" method="post" class="d-flex flex-wrap gap-2 status-form">
+                        <input type="hidden" name="id" value="@reserva.Id" /><input type="hidden" name="data" value="@data.ToString("yyyy-MM-dd")" />
+                        @if (reserva.Status == StatusReserva.Pendente){<button name="status" value="Confirmada" class="btn btn-sm btn-outline-success">Confirmar</button>}
+                        <button name="status" value="Concluida" class="btn btn-sm btn-outline-brand">Concluir</button>
+                        <button name="status" value="NaoCompareceu" class="btn btn-sm btn-outline-secondary">Não compareceu</button>
+                        <button name="status" value="Cancelada" class="btn btn-sm btn-outline-danger confirm-action" data-message="Cancelar este atendimento?">Cancelar</button>
+                    </form>
+                }
+            </article>
+        }
+        </div>
+    }
+</section>

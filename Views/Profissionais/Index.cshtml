@@ -1,0 +1,52 @@
+@model IEnumerable<BarberFlow.Models.Profissional>
+@{
+    ViewData["Title"] = "Profissionais";
+}
+<section class="container py-5">
+    <div class="admin-page-header mb-4">
+        <div>
+            <span class="eyebrow">CONHEÇA A EQUIPE</span>
+            <h1 class="fw-bold mt-2 mb-1">Nossos profissionais</h1>
+            <p class="text-secondary mb-0">Escolha o estilo de atendimento que mais combina com você.</p>
+        </div>
+        <a class="btn btn-accent" asp-controller="Servicos" asp-action="Index">Ver serviços</a>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var profissional in Model)
+        {
+            var media = profissional.Avaliacoes.Any() ? profissional.Avaliacoes.Average(a => a.Nota) : 0;
+            <div class="col-md-6 col-xl-4">
+                <article class="professional-card h-100">
+                    <div class="professional-photo-wrap">
+                        @if (!string.IsNullOrWhiteSpace(profissional.FotoUrl))
+                        {
+                            <img src="@profissional.FotoUrl" alt="Foto de @profissional.Nome" class="professional-photo" />
+                        }
+                        else
+                        {
+                            <div class="professional-photo placeholder-photo">@profissional.Nome.Substring(0, 1).ToUpper()</div>
+                        }
+                    </div>
+                    <div class="professional-card-body">
+                        <div class="d-flex align-items-start justify-content-between gap-3">
+                            <div>
+                                <h2 class="h4 mb-1">@profissional.Nome</h2>
+                                <p class="professional-specialty mb-0">@(profissional.Especialidade ?? "Barbeiro BarberFlow")</p>
+                            </div>
+                            <span class="rating-chip">★ @(media > 0 ? media.ToString("0.0") : "Novo")</span>
+                        </div>
+                        <p class="text-secondary mt-3 line-clamp-3">@(profissional.Biografia ?? "Profissional disponível para cuidar do seu visual com atenção aos detalhes.")</p>
+                        <div class="d-flex flex-wrap gap-2 mb-4">
+                            @foreach (var item in profissional.ProfissionalServicos.Take(3))
+                            {
+                                <span class="soft-tag">@item.Servico.Nome</span>
+                            }
+                        </div>
+                        <a class="btn btn-outline-brand w-100" asp-action="Detalhes" asp-route-id="@profissional.Id">Ver perfil e horários</a>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+</section>

@@ -1,0 +1,25 @@
+@model IEnumerable<BarberFlow.Models.HorarioTrabalho>
+@{
+    var profissional = (BarberFlow.Models.Profissional)ViewBag.Profissional;
+    ViewData["Title"] = "Horários de trabalho";
+    string NomeDia(DayOfWeek dia) => dia switch { DayOfWeek.Sunday => "Domingo", DayOfWeek.Monday => "Segunda-feira", DayOfWeek.Tuesday => "Terça-feira", DayOfWeek.Wednesday => "Quarta-feira", DayOfWeek.Thursday => "Quinta-feira", DayOfWeek.Friday => "Sexta-feira", DayOfWeek.Saturday => "Sábado", _ => dia.ToString() };
+}
+<div class="container py-5">
+    <div class="admin-page-header">
+        <div><a class="back-link" asp-controller="ProfissionaisAdmin" asp-action="Index">← Voltar para profissionais</a><h1 class="fw-bold mt-3 mb-1">Agenda de @profissional.Nome</h1><p class="text-muted mb-0">Defina os períodos de atendimento usados para gerar os horários disponíveis para reserva.</p></div>
+        <a class="btn btn-accent" asp-action="Criar" asp-route-profissionalId="@profissional.Id">Adicionar horário</a>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="empty-state mt-4 text-center mx-auto"><h2 class="h4 fw-bold">Agenda ainda não configurada</h2><p class="text-muted">Adicione os dias e períodos de trabalho deste profissional.</p></div>
+    }
+    else
+    {
+        <div class="schedule-grid mt-4">
+        @foreach (var item in Model)
+        {
+            <div class="schedule-card"><div><span>@NomeDia(item.DiaSemana)</span><strong>@item.HoraInicio.ToString(@"hh\:mm") – @item.HoraFim.ToString(@"hh\:mm")</strong></div><form asp-action="Excluir" asp-route-id="@item.Id" method="post"><button class="btn btn-sm btn-outline-danger">Remover</button></form></div>
+        }
+        </div>
+    }
+</div>

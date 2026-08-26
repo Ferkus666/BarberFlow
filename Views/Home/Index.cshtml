@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Início";
+}
+<section class="hero-section">
+    <div class="container py-5">
+        <div class="row align-items-center g-5 py-lg-5">
+            <div class="col-lg-7">
+                <span class="eyebrow">Agenda digital para barbearias</span>
+                <h1 class="display-4 fw-bold mt-3">Seu próximo corte começa com um horário bem escolhido.</h1>
+                <p class="lead hero-copy mt-3">Consulte os serviços, crie sua conta e reserve com praticidade, sem ligações ou espera.</p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a class="btn btn-accent btn-lg" asp-controller="Servicos" asp-action="Index">Ver serviços</a>
+                    @if (User.Identity?.IsAuthenticated != true)
+                    {
+                        <a class="btn btn-outline-light btn-lg" asp-controller="Conta" asp-action="Registro">Criar minha conta</a>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-panel">
+                    <div class="hero-panel-number">✓</div>
+                    <p class="text-uppercase small fw-semibold mb-2">Agendamento simples</p>
+                    <h2 class="h3 fw-bold">Escolha seu profissional e reserve online</h2>
+                    <p class="mb-0">Conheça especialidades e avaliações, encontre um horário disponível e acompanhe suas reservas em um só lugar.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4"><div class="feature-card"><span>01</span><h2 class="h5">Escolha o serviço</h2><p>Veja duração, preço e detalhes antes de decidir.</p></div></div>
+        <div class="col-md-4"><div class="feature-card"><span>02</span><h2 class="h5">Tenha seu acesso</h2><p>Cadastro protegido pelo ASP.NET Core Identity.</p></div></div>
+        <div class="col-md-4"><div class="feature-card"><span>03</span><h2 class="h5">Confirme seu horário</h2><p>Veja apenas opções livres e acompanhe tudo em Minhas reservas.</p></div></div>
+    </div>
+</section>

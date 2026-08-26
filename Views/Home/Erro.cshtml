@@ -1,0 +1,16 @@
+@model BarberFlow.ViewModels.ErroViewModel
+@{
+    ViewData["Title"] = "Algo não saiu como esperado";
+}
+
+<section class="container py-5">
+    <div class="card border-0 shadow-sm mx-auto" style="max-width: 680px;">
+        <div class="card-body p-5 text-center">
+            <div class="display-4 mb-3">⚠️</div>
+            <h1 class="h3">Algo não saiu como esperado</h1>
+            <p class="text-muted">A operação não pôde ser concluída. Volte à página anterior e tente novamente.</p>
+            <p class="small text-muted mb-4">Código: @Model.StatusCode · Identificador: <code>@Model.TraceId</code></p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Voltar ao início</a>
+        </div>
+    </div>
+</section>

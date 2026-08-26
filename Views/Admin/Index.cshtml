@@ -1,0 +1,59 @@
+@model BarberFlow.ViewModels.Dashboard.DashboardAdminViewModel
+@using System.Text.Json
+@{ ViewData["Title"] = "Dashboard"; }
+<section class="container py-5">
+    <div class="admin-page-header mb-4">
+        <div><span class="eyebrow">PAINEL ADMINISTRATIVO</span><h1 class="mt-2 mb-1">Dashboard do BarberFlow</h1><p class="text-secondary mb-0">Indicadores operacionais e financeiros calculados em tempo real.</p></div>
+        <a asp-controller="RelatoriosAdmin" asp-action="Index" class="btn btn-accent">Abrir relatórios</a>
+    </div>
+
+    <div class="dashboard-grid mb-4">
+        <div class="metric-card"><span>Atendimentos hoje</span><strong>@Model.AtendimentosHoje</strong><small>@Model.ReservasSemana reservas nesta semana</small></div>
+        <div class="metric-card"><span>Pendentes</span><strong>@Model.Pendentes</strong><small>@Model.Confirmadas confirmadas</small></div>
+        <div class="metric-card"><span>Clientes</span><strong>@Model.TotalClientes</strong><small>@Model.ProfissionaisAtivos profissionais ativos</small></div>
+        <div class="metric-card"><span>Faturamento realizado</span><strong>@Model.FaturamentoRealizado.ToString("C")</strong><small>Somente atendimentos concluídos</small></div>
+        <div class="metric-card"><span>Faturamento previsto</span><strong>@Model.FaturamentoPrevisto.ToString("C")</strong><small>Reservas futuras válidas</small></div>
+        <div class="metric-card"><span>Cancelamentos</span><strong>@Model.TaxaCancelamento.ToString("0.0")%</strong><small>@Model.TaxaNaoComparecimento.ToString("0.0")% não compareceram</small></div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8"><div class="chart-card"><div class="chart-title"><h2>Reservas nos últimos 7 dias</h2><span>Evolução diária</span></div><canvas id="reservasDiaChart" height="110"></canvas></div></div>
+        <div class="col-lg-4"><div class="chart-card"><div class="chart-title"><h2>Reservas por status</h2><span>Distribuição atual</span></div><canvas id="statusChart" height="230"></canvas></div></div>
+        <div class="col-lg-6"><div class="chart-card"><div class="chart-title"><h2>Serviços mais reservados</h2><span>Top 5</span></div><canvas id="servicosChart" height="160"></canvas></div></div>
+        <div class="col-lg-6"><div class="chart-card"><div class="chart-title"><h2>Atendimentos por profissional</h2><span>Top 5</span></div><canvas id="profissionaisChart" height="160"></canvas></div></div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="table-card h-100">
+                <div class="card-heading"><div><h2>Próximos atendimentos</h2><p>Agenda futura mais próxima</p></div><a asp-controller="ReservasAdmin" asp-action="Index">Ver todas</a></div>
+                @if (Model.ProximasReservas.Any())
+                {
+                    <div class="table-responsive"><table class="table align-middle mb-0"><thead><tr><th>Data</th><th>Cliente</th><th>Profissional</th><th>Serviço</th><th>Status</th></tr></thead><tbody>
+                    @foreach (var reserva in Model.ProximasReservas)
+                    {<tr><td>@reserva.DataHoraInicio.ToString("dd/MM HH:mm")</td><td>@reserva.Cliente.Nome</td><td>@reserva.Profissional.Nome</td><td>@reserva.Servico.Nome</td><td><span class="status-pill status-@reserva.Status.ToString().ToLower()">@reserva.Status</span></td></tr>}
+                    </tbody></table></div>
+                }
+                else { <div class="empty-panel">Nenhum atendimento futuro cadastrado.</div> }
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="quick-actions h-100"><h2>Ações rápidas</h2>
+                <a asp-controller="ProfissionaisAdmin" asp-action="Index"><span>01</span><div><strong>Profissionais</strong><small>Cadastros e horários</small></div></a>
+                <a asp-controller="ServicosAdmin" asp-action="Index"><span>02</span><div><strong>Serviços</strong><small>Catálogo e preços</small></div></a>
+                <a asp-controller="ReservasAdmin" asp-action="Index"><span>03</span><div><strong>Reservas</strong><small>Filtros e status</small></div></a>
+                <a asp-controller="RelatoriosAdmin" asp-action="Index"><span>04</span><div><strong>Relatórios</strong><small>Períodos e resultados</small></div></a>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const chartDefaults = { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{grid:{display:false}}} };
+new Chart(document.getElementById('reservasDiaChart'), {type:'line',data:{labels:@Html.Raw(JsonSerializer.Serialize(Model.DiasLabels)),datasets:[{data:@Html.Raw(JsonSerializer.Serialize(Model.ReservasPorDia)),borderColor:'#2aa89a',backgroundColor:'rgba(42,168,154,.12)',fill:true,tension:.35,borderWidth:3,pointRadius:4}]},options:chartDefaults});
+new Chart(document.getElementById('statusChart'), {type:'doughnut',data:{labels:@Html.Raw(JsonSerializer.Serialize(Model.StatusLabels)),datasets:[{data:@Html.Raw(JsonSerializer.Serialize(Model.StatusValores)),backgroundColor:['#e0a800','#2aa89a','#198754','#dc3545','#6c757d'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+new Chart(document.getElementById('servicosChart'), {type:'bar',data:{labels:@Html.Raw(JsonSerializer.Serialize(Model.ServicosLabels)),datasets:[{data:@Html.Raw(JsonSerializer.Serialize(Model.ServicosValores)),backgroundColor:'#12344d',borderRadius:7}]},options:chartDefaults});
+new Chart(document.getElementById('profissionaisChart'), {type:'bar',data:{labels:@Html.Raw(JsonSerializer.Serialize(Model.ProfissionaisLabels)),datasets:[{data:@Html.Raw(JsonSerializer.Serialize(Model.ProfissionaisValores)),backgroundColor:'#2aa89a',borderRadius:7}]},options:{...chartDefaults,indexAxis:'y'}});
+</script>
+}

@@ -1,0 +1,36 @@
+@model BarberFlow.ViewModels.Avaliacoes.AvaliacaoFormViewModel
+@{ ViewData["Title"] = "Avaliar atendimento"; }
+<section class="container py-5">
+    <div class="form-shell mx-auto">
+        <a asp-controller="Reservas" asp-action="Index" class="back-link">← Voltar para minhas reservas</a>
+        <div class="form-card mt-3">
+            <span class="eyebrow">SUA EXPERIÊNCIA</span>
+            <h1 class="h2 fw-bold mt-2">Avaliar atendimento</h1>
+            <p class="text-secondary">@Model.ServicoNome com <strong>@Model.ProfissionalNome</strong></p>
+            <form asp-action="Criar" method="post">
+                <input asp-for="ReservaId" type="hidden" />
+                <input asp-for="ProfissionalNome" type="hidden" />
+                <input asp-for="ServicoNome" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Nota</label>
+                    <div class="star-selector">
+                        @for (var i = 5; i >= 1; i--)
+                        {
+                            <input type="radio" asp-for="Nota" value="@i" id="star-@i" />
+                            <label for="star-@i" title="@i estrela(s)">★</label>
+                        }
+                    </div>
+                    <span asp-validation-for="Nota" class="text-danger"></span>
+                </div>
+                <div class="mb-4">
+                    <label asp-for="Comentario" class="form-label">Comentário (opcional)</label>
+                    <textarea asp-for="Comentario" class="form-control" rows="5" placeholder="Conte como foi sua experiência..."></textarea>
+                    <span asp-validation-for="Comentario" class="text-danger"></span>
+                </div>
+                <button class="btn btn-accent px-4" type="submit">Publicar avaliação</button>
+            </form>
+        </div>
+    </div>
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

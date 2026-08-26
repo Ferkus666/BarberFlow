@@ -1,0 +1,36 @@
+@model BarberFlow.ViewModels.Reservas.ReagendarReservaViewModel
+@{ ViewData["Title"] = "Reagendar reserva"; }
+<section class="container py-5 reservation-page">
+    <div class="admin-page-header mb-4">
+        <div><span class="eyebrow">ÁREA DO CLIENTE</span><h1 class="mt-2">Reagendar atendimento</h1><p class="text-secondary mb-0">@Model.ServicoNome com @Model.ProfissionalNome</p></div>
+        <a asp-action="Index" class="back-link">Voltar às reservas</a>
+    </div>
+    <div class="form-card">
+        <form asp-action="Reagendar" method="get" class="row g-3 align-items-end mb-4">
+            <input type="hidden" name="id" value="@Model.ReservaId" />
+            <div class="col-md-5"><label asp-for="Data" class="form-label"></label><input asp-for="Data" min="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" /></div>
+            <div class="col-md-3 d-grid"><button class="btn btn-outline-brand">Consultar horários</button></div>
+        </form>
+        <form asp-action="Reagendar" method="post">
+            <input type="hidden" asp-for="ReservaId" /><input type="hidden" asp-for="Data" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <h2 class="h5 mb-3">Horários disponíveis em @Model.Data.ToString("dd/MM/yyyy")</h2>
+            @if (!Model.HorariosDisponiveis.Any())
+            {
+                <div class="empty-inline">Nenhum horário disponível nesta data.</div>
+            }
+            else
+            {
+                <div class="time-grid mb-4">
+                    @foreach (var horario in Model.HorariosDisponiveis)
+                    {
+                        <label class="time-option"><input asp-for="Horario" type="radio" value="@horario.Inicio.ToString("HH:mm")" /><span>@horario.Rotulo</span></label>
+                    }
+                </div>
+                <span asp-validation-for="Horario" class="text-danger d-block mb-3"></span>
+                <button class="btn btn-accent px-4">Confirmar novo horário</button>
+            }
+        </form>
+    </div>
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,23 @@
+@model Servico
+@{
+    ViewData["Title"] = Model.Nome;
+}
+<div class="container py-5">
+    <a asp-action="Index" class="back-link">← Voltar aos serviços</a>
+    <div class="card shadow-sm mt-3">
+        <div class="card-body p-4 p-lg-5">
+            <span class="eyebrow">SERVIÇO BARBERFLOW</span>
+            <h1 class="fw-bold mt-2">@Model.Nome</h1>
+            <p class="lead text-secondary">@Model.Descricao</p>
+            <div class="d-flex flex-wrap gap-4 my-4">
+                <div><span class="d-block text-secondary small">Duração</span><strong>@Model.DuracaoMinutos minutos</strong></div>
+                <div><span class="d-block text-secondary small">Preço</span><strong>@Model.Preco.ToString("C")</strong></div>
+            </div>
+            <a class="btn btn-accent px-4" asp-controller="Reservas" asp-action="Nova" asp-route-servicoId="@Model.Id">Reservar este serviço</a>
+            @if (User.Identity?.IsAuthenticated != true)
+            {
+                <p class="small text-secondary mt-3 mb-0">Ao continuar, você será direcionado ao login antes de escolher o horário.</p>
+            }
+        </div>
+    </div>
+</div>

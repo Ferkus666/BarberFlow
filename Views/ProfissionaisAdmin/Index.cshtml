@@ -1,0 +1,57 @@
+@model IEnumerable<BarberFlow.Models.Profissional>
+@{
+    ViewData["Title"] = "Profissionais";
+}
+<div class="container py-5">
+    <div class="admin-page-header">
+        <div>
+            <span class="eyebrow text-dark">Equipe</span>
+            <h1 class="fw-bold mt-2 mb-1">Profissionais</h1>
+            <p class="text-muted mb-0">Gerencie barbeiros, serviços realizados e horários de trabalho.</p>
+        </div>
+        <a class="btn btn-accent" asp-action="Criar">Novo profissional</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state mt-4 text-center mx-auto">
+            <h2 class="h4 fw-bold">Nenhum profissional cadastrado</h2>
+            <p class="text-muted">Cadastre o primeiro profissional para começar a montar a agenda.</p>
+            <a class="btn btn-accent" asp-action="Criar">Cadastrar profissional</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-card mt-4">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Profissional</th><th>Serviços</th><th>Horários</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.Nome</strong><div class="small text-muted text-truncate bio-cell">@item.Biografia</div></td>
+                            <td>
+                                @if (item.ProfissionalServicos.Any())
+                                {
+                                    @foreach (var ps in item.ProfissionalServicos.Take(3)) { <span class="soft-tag">@ps.Servico.Nome</span> }
+                                }
+                                else { <span class="text-muted small">Nenhum serviço</span> }
+                            </td>
+                            <td><span class="fw-semibold">@item.HorariosTrabalho.Count</span> período(s)</td>
+                            <td><span class="status-pill @(item.Ativo ? "status-active" : "status-inactive")">@(item.Ativo ? "Ativo" : "Inativo")</span></td>
+                            <td class="text-end text-nowrap">
+                                <a class="btn btn-sm btn-outline-brand" asp-action="Editar" asp-route-id="@item.Id">Editar</a>
+                                <a class="btn btn-sm btn-outline-secondary" asp-controller="HorariosAdmin" asp-action="Index" asp-route-profissionalId="@item.Id">Horários</a>
+                                <form class="d-inline" asp-action="AlternarStatus" asp-route-id="@item.Id" method="post">
+                                    <button class="btn btn-sm @(item.Ativo ? "btn-outline-danger" : "btn-outline-success")" type="submit">@(item.Ativo ? "Desativar" : "Ativar")</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,23 @@
+@model BarberFlow.Models.Servico
+@{
+    var edicao = Model.Id > 0;
+    ViewData["Title"] = edicao ? "Editar serviço" : "Novo serviço";
+}
+<div class="container py-5"><div class="form-shell mx-auto">
+    <a class="back-link" asp-action="Index">← Voltar para serviços</a>
+    <div class="form-card mt-3">
+        <span class="eyebrow text-dark">Catálogo</span><h1 class="h2 fw-bold mt-2">@(edicao ? "Editar serviço" : "Cadastrar serviço")</h1>
+        <form asp-action="@(edicao ? "Editar" : "Criar")" asp-route-id="@Model.Id" method="post">
+            <input asp-for="Id" type="hidden" /><div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3"><label asp-for="Nome" class="form-label"></label><input asp-for="Nome" class="form-control" /><span asp-validation-for="Nome" class="text-danger"></span></div>
+            <div class="mb-3"><label asp-for="Descricao" class="form-label"></label><textarea asp-for="Descricao" rows="3" class="form-control"></textarea><span asp-validation-for="Descricao" class="text-danger"></span></div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6"><label asp-for="DuracaoMinutos" class="form-label">Duração em minutos</label><input asp-for="DuracaoMinutos" class="form-control" /><span asp-validation-for="DuracaoMinutos" class="text-danger"></span></div>
+                <div class="col-md-6"><label asp-for="Preco" class="form-label"></label><input asp-for="Preco" class="form-control" step="0.01" /><span asp-validation-for="Preco" class="text-danger"></span></div>
+            </div>
+            <div class="form-check form-switch mb-4"><input asp-for="Ativo" class="form-check-input" /><label asp-for="Ativo" class="form-check-label">Serviço ativo</label></div>
+            <div class="d-flex justify-content-end gap-2"><a class="btn btn-light" asp-action="Index">Cancelar</a><button class="btn btn-accent px-4">Salvar serviço</button></div>
+        </form>
+    </div>
+</div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

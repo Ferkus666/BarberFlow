@@ -1,0 +1,32 @@
+@model IEnumerable<BarberFlow.Models.Servico>
+@{
+    ViewData["Title"] = "Gestão de serviços";
+}
+<div class="container py-5">
+    <div class="admin-page-header">
+        <div><span class="eyebrow text-dark">Catálogo</span><h1 class="fw-bold mt-2 mb-1">Serviços</h1><p class="text-muted mb-0">Controle duração, preço e disponibilidade.</p></div>
+        <a class="btn btn-accent" asp-action="Criar">Novo serviço</a>
+    </div>
+    <div class="table-card mt-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead><tr><th>Serviço</th><th>Duração</th><th>Preço</th><th>Status</th><th class="text-end">Ações</th></tr></thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.Nome</strong><div class="small text-muted">@item.Descricao</div></td>
+                        <td>@item.DuracaoMinutos min</td>
+                        <td>@item.Preco.ToString("C")</td>
+                        <td><span class="status-pill @(item.Ativo ? "status-active" : "status-inactive")">@(item.Ativo ? "Ativo" : "Inativo")</span></td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-brand" asp-action="Editar" asp-route-id="@item.Id">Editar</a>
+                            <form class="d-inline" asp-action="AlternarStatus" asp-route-id="@item.Id" method="post"><button class="btn btn-sm @(item.Ativo ? "btn-outline-danger" : "btn-outline-success")">@(item.Ativo ? "Desativar" : "Ativar")</button></form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

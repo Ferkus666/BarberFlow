@@ -1,0 +1,34 @@
+@model IEnumerable<BarberFlow.Models.Reserva>
+@using BarberFlow.Enums
+@{ ViewData["Title"] = "Minhas reservas"; }
+<section class="container py-5">
+    <div class="admin-page-header mb-4"><div><span class="eyebrow">ÁREA DO CLIENTE</span><h1 class="mt-2">Minhas reservas</h1><p class="text-secondary mb-0">Acompanhe seus próximos atendimentos e seu histórico.</p></div><a asp-action="Nova" class="btn btn-accent">Nova reserva</a></div>
+    @if (!Model.Any()) { <div class="empty-state mx-auto text-center"><h2 class="h4">Você ainda não possui reservas</h2><p class="text-secondary">Escolha um serviço, um profissional e o melhor horário.</p><a asp-action="Nova" class="btn btn-accent">Agendar agora</a></div> }
+    else
+    {
+        <div class="reservation-list">
+        @foreach (var reserva in Model)
+        {
+            <article class="reservation-card">
+                <div class="reservation-date"><strong>@reserva.DataHoraInicio.ToString("dd")</strong><span>@reserva.DataHoraInicio.ToString("MMM").ToUpper()</span></div>
+                <div class="flex-grow-1"><h2 class="h5 mb-1">@reserva.Servico.Nome</h2><p class="mb-1 text-secondary">@reserva.Profissional.Nome · @reserva.DataHoraInicio.ToString("HH:mm") às @reserva.DataHoraFim.ToString("HH:mm")</p><span class="status-pill status-@reserva.Status.ToString().ToLower()">@reserva.Status</span></div>
+                @if (reserva.Status == StatusReserva.Concluida && reserva.Avaliacao is null)
+                {
+                    <a asp-controller="Avaliacoes" asp-action="Criar" asp-route-reservaId="@reserva.Id" class="btn btn-sm btn-accent">Avaliar atendimento</a>
+                }
+                else if (reserva.Status == StatusReserva.Concluida && reserva.Avaliacao is not null)
+                {
+                    <span class="reviewed-badge">★ Avaliado</span>
+                }
+                @if (reserva.Status is not StatusReserva.Cancelada and not StatusReserva.Concluida && reserva.DataHoraInicio > DateTime.Now)
+                {
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a asp-action="Reagendar" asp-route-id="@reserva.Id" class="btn btn-sm btn-outline-brand">Reagendar</a>
+                        <form asp-action="Cancelar" method="post"><input type="hidden" name="id" value="@reserva.Id" /><button class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancelar esta reserva?')">Cancelar</button></form>
+                    </div>
+                }
+            </article>
+        }
+        </div>
+    }
+</section>

@@ -1,0 +1,38 @@
+@model BarberFlow.ViewModels.Reservas.NovaReservaViewModel
+@{ ViewData["Title"] = "Nova reserva"; }
+<section class="container py-5 reservation-page">
+    <div class="admin-page-header mb-4">
+        <div><span class="eyebrow">AGENDA INTELIGENTE</span><h1 class="mt-2">Escolha seu horário</h1><p class="text-secondary mb-0">Os horários exibidos respeitam a jornada, a duração do serviço e as reservas já feitas.</p></div>
+        <a asp-action="Index" class="back-link">Minhas reservas</a>
+    </div>
+    <div class="form-card">
+        <form asp-action="Nova" method="get" class="row g-3 align-items-end mb-4">
+            <div class="col-md-4"><label asp-for="ServicoId" class="form-label"></label><select asp-for="ServicoId" asp-items="Model.Servicos" class="form-select"><option value="">Selecione</option></select></div>
+            <div class="col-md-4"><label asp-for="ProfissionalId" class="form-label"></label><select asp-for="ProfissionalId" asp-items="Model.Profissionais" class="form-select"><option value="">Selecione</option></select></div>
+            <div class="col-md-3"><label asp-for="Data" class="form-label"></label><input asp-for="Data" min="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" /></div>
+            <div class="col-md-1 d-grid"><button class="btn btn-outline-brand">Ver</button></div>
+        </form>
+        @if (Model.ServicoId > 0 && Model.ProfissionalId > 0)
+        {
+            <form asp-action="Nova" method="post">
+                <input type="hidden" asp-for="ServicoId" /><input type="hidden" asp-for="ProfissionalId" /><input type="hidden" asp-for="Data" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <h2 class="h5 mb-3">Horários disponíveis em @Model.Data.ToString("dd/MM/yyyy")</h2>
+                @if (Model.HorariosDisponiveis.Count == 0) { <div class="empty-inline">Nenhum horário livre para essa combinação.</div> }
+                else
+                {
+                    <div class="time-grid mb-4">
+                    @foreach (var horario in Model.HorariosDisponiveis)
+                    {
+                        var valor = horario.Inicio.ToString("HH:mm");
+                        <label class="time-option"><input asp-for="Horario" type="radio" value="@valor" /><span>@horario.Rotulo</span></label>
+                    }
+                    </div>
+                    <span asp-validation-for="Horario" class="text-danger d-block mb-3"></span>
+                    <button class="btn btn-accent px-4">Confirmar reserva</button>
+                }
+            </form>
+        }
+    </div>
+</section>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

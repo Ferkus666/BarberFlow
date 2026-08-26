@@ -1,0 +1,83 @@
+@model BarberFlow.ViewModels.Profissionais.ProfissionalPublicoViewModel
+@{
+    ViewData["Title"] = Model.Profissional.Nome;
+    var p = Model.Profissional;
+    var dias = new Dictionary<DayOfWeek, string> { [DayOfWeek.Sunday]="Domingo", [DayOfWeek.Monday]="Segunda-feira", [DayOfWeek.Tuesday]="Terça-feira", [DayOfWeek.Wednesday]="Quarta-feira", [DayOfWeek.Thursday]="Quinta-feira", [DayOfWeek.Friday]="Sexta-feira", [DayOfWeek.Saturday]="Sábado" };
+}
+<section class="container py-5">
+    <a asp-action="Index" class="back-link">← Voltar para profissionais</a>
+    <div class="profile-hero mt-3">
+        <div class="profile-photo-box">
+            @if (!string.IsNullOrWhiteSpace(p.FotoUrl)) { <img src="@p.FotoUrl" alt="Foto de @p.Nome" class="profile-photo" /> }
+            else { <div class="profile-photo placeholder-photo">@p.Nome.Substring(0,1).ToUpper()</div> }
+        </div>
+        <div class="flex-grow-1">
+            <span class="eyebrow">PROFISSIONAL BARBERFLOW</span>
+            <h1 class="display-6 fw-bold mt-2 mb-1">@p.Nome</h1>
+            <p class="profile-specialty">@(p.Especialidade ?? "Barbeiro BarberFlow")</p>
+            <div class="d-flex flex-wrap gap-3 mt-3 profile-meta">
+                <span><strong>★ @(Model.TotalAvaliacoes > 0 ? Model.MediaAvaliacoes.ToString("0.0") : "Novo")</strong> · @Model.TotalAvaliacoes avaliação(ões)</span>
+                @if (p.AnosExperiencia.HasValue) { <span><strong>@p.AnosExperiencia</strong> anos de experiência</span> }
+                @if (!string.IsNullOrWhiteSpace(p.Instagram)) { <span>@("@" + p.Instagram)</span> }
+            </div>
+            <p class="lead text-secondary mt-4 mb-0">@(p.Biografia ?? "Atendimento focado em técnica, cuidado e um resultado que combine com seu estilo.")</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-lg-7">
+            <div class="profile-section-card">
+                <h2 class="h4 fw-bold">Serviços</h2>
+                <div class="service-list-modern mt-3">
+                    @foreach (var item in p.ProfissionalServicos.Where(x => x.Servico.Ativo))
+                    {
+                        <div class="service-row-modern">
+                            <div><strong>@item.Servico.Nome</strong><span>@item.Servico.DuracaoMinutos min · @item.Servico.Preco.ToString("C")</span></div>
+                            <a class="btn btn-sm btn-accent" asp-controller="Reservas" asp-action="Nova" asp-route-servicoId="@item.ServicoId" asp-route-profissionalId="@p.Id">Reservar</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="profile-section-card">
+                <h2 class="h4 fw-bold">Agenda semanal</h2>
+                @if (!p.HorariosTrabalho.Any(h => h.Ativo)) { <p class="text-secondary mt-3 mb-0">Agenda ainda não cadastrada.</p> }
+                else
+                {
+                    <div class="weekly-schedule mt-3">
+                    @foreach (var grupo in p.HorariosTrabalho.Where(h => h.Ativo).OrderBy(h => h.DiaSemana).ThenBy(h => h.HoraInicio).GroupBy(h => h.DiaSemana))
+                    {
+                        var horarios = string.Join(" · ", grupo.Select(h => h.HoraInicio.ToString(@"hh\:mm") + "–" + h.HoraFim.ToString(@"hh\:mm")));
+                        <div><strong>@dias[grupo.Key]</strong><span>@horarios</span></div>
+                    }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-section-card mt-4">
+        <div class="d-flex justify-content-between align-items-end gap-3 flex-wrap">
+            <div><span class="eyebrow">EXPERIÊNCIA DOS CLIENTES</span><h2 class="h4 fw-bold mt-2 mb-0">Avaliações recentes</h2></div>
+            @if (Model.TotalAvaliacoes > 0) { <strong class="rating-large">★ @Model.MediaAvaliacoes.ToString("0.0")</strong> }
+        </div>
+        @if (!Model.AvaliacoesRecentes.Any())
+        {
+            <div class="empty-inline mt-3">Este profissional ainda não recebeu avaliações.</div>
+        }
+        else
+        {
+            <div class="reviews-grid mt-4">
+                @foreach (var avaliacao in Model.AvaliacoesRecentes)
+                {
+                    <article class="review-card">
+                        <div class="review-stars">@string.Concat(Enumerable.Repeat("★", avaliacao.Nota))</div>
+                        <p class="mb-3">@(string.IsNullOrWhiteSpace(avaliacao.Comentario) ? "Atendimento avaliado sem comentário." : avaliacao.Comentario)</p>
+                        <small>@avaliacao.Cliente.Nome · @avaliacao.DataCriacao.ToLocalTime().ToString("dd/MM/yyyy")</small>
+                    </article>
+                }
+            </div>
+        }
+    </div>
+</section>

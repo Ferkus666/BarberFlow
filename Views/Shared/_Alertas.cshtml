@@ -1,0 +1,13 @@
+@{
+    var sucesso = TempData["Sucesso"] as string;
+    var erro = TempData["Erro"] as string;
+}
+@if (!string.IsNullOrWhiteSpace(sucesso) || !string.IsNullOrWhiteSpace(erro))
+{
+    <div class="toast-container position-fixed top-0 end-0 p-3 mt-5" style="z-index:1080">
+        @if (!string.IsNullOrWhiteSpace(sucesso))
+        {<div class="toast show barber-toast toast-success" role="alert"><div class="d-flex"><div class="toast-body"><strong>Operação concluída</strong><span>@sucesso</span></div><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button></div></div>}
+        @if (!string.IsNullOrWhiteSpace(erro))
+        {<div class="toast show barber-toast toast-error" role="alert"><div class="d-flex"><div class="toast-body"><strong>Não foi possível concluir</strong><span>@erro</span></div><button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button></div></div>}
+    </div>
+}

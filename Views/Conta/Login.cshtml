@@ -1,0 +1,38 @@
+@model BarberFlow.ViewModels.Conta.LoginViewModel
+@{
+    ViewData["Title"] = "Entrar";
+}
+<div class="auth-page">
+    <div class="container py-5">
+        <div class="auth-card mx-auto">
+            <div class="mb-4">
+                <span class="eyebrow text-dark">Área do cliente</span>
+                <h1 class="h2 fw-bold mt-2">Entre no BarberFlow</h1>
+                <p class="text-muted">Acesse sua conta para acompanhar suas futuras reservas.</p>
+            </div>
+            <form asp-action="Login" method="post" novalidate>
+                <input asp-for="ReturnUrl" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" autocomplete="email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Senha" class="form-label"></label>
+                    <input asp-for="Senha" class="form-control" autocomplete="current-password" />
+                    <span asp-validation-for="Senha" class="text-danger"></span>
+                </div>
+                <div class="form-check mb-4">
+                    <input asp-for="LembrarMe" class="form-check-input" />
+                    <label asp-for="LembrarMe" class="form-check-label"></label>
+                </div>
+                <button class="btn btn-accent w-100 py-2" type="submit">Entrar</button>
+            </form>
+            <p class="text-center mt-4 mb-0">Ainda não possui conta? <a asp-action="Registro">Cadastre-se</a></p>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

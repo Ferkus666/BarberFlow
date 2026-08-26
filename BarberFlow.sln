@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarberFlow", "BarberFlow.csproj", "{91DFE079-6D0D-4C0F-92C5-F85AA0EB67E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BarberFlow.Tests", "tests\BarberFlow.Tests\BarberFlow.Tests.csproj", "{B67C5E8D-AD93-48F2-A55F-0B6F40F8B6F1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91DFE079-6D0D-4C0F-92C5-F85AA0EB67E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91DFE079-6D0D-4C0F-92C5-F85AA0EB67E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91DFE079-6D0D-4C0F-92C5-F85AA0EB67E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91DFE079-6D0D-4C0F-92C5-F85AA0EB67E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B67C5E8D-AD93-48F2-A55F-0B6F40F8B6F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B67C5E8D-AD93-48F2-A55F-0B6F40F8B6F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B67C5E8D-AD93-48F2-A55F-0B6F40F8B6F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B67C5E8D-AD93-48F2-A55F-0B6F40F8B6F1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
